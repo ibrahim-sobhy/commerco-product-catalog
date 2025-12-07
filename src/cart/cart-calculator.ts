@@ -1,10 +1,9 @@
-import { CartService } from "./cart.service";
+import { CartItem } from "./cart-item";
 
 export class CartCalculator {
-    private cartService = new CartService();
 
-    async getTotalPrice(): Promise<number> {
-        const items = this.cartService.getCart();
+    async calculateTotalPrice(items: CartItem[]): Promise<number> {
+
         let total = 0;
         for (const item of items) {
             total += (item.price ?? 0) * item.quantity;
@@ -15,4 +14,5 @@ export class CartCalculator {
         }
         return total;
     }
+
 }

@@ -1,6 +1,12 @@
 import { CartService } from "./cart/cart.service";
+import { ProductRepository } from "./products/product-local.repository";
 
-const cart = new CartService();
+const storage = new ProductRepository;
+const cart = new CartService(storage);
 
 cart.addToCart({ productId: "p1", quantity: 2 });
-console.log(cart.getCart());
+
+( async () => {
+    await cart.addCalculatedTotalPrice();
+    console.log(cart.getCart());
+})();
