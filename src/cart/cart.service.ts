@@ -1,13 +1,15 @@
 import { AddToCartRequest } from "../interfaces/add-to-cart.request";
 import { IProductRepository } from "../interfaces/product.repository";
-import { Cart } from "../interfaces/cart";
+import { CartItem } from "./cart-item";
 import { CartCalculator } from "./cart-calculator";
 
 export class CartService {
-    private cart : Cart;
+    private cartCalculator = new CartCalculator();
+    private items : CartItem[] = [];
+
     constructor(private productRepo: IProductRepository) {
-        this.cart = { items: [], totalPrice: 0 };
     }
+
     addToCart(request: AddToCartRequest): void {
         const product = this.productRepo.findById(request.productId);
         if (!product) {
@@ -17,20 +19,19 @@ export class CartService {
             throw new Error("Insufficient stock");
         }
         
-        const existingItem = this.cart.items.find(item => item.productId === request.productId);
+        const existingItem = this.items.find(item => item.productId === request.productId);
         if (existingItem) {
             existingItem.quantity += request.quantity;
         } else {
-            this.cart.items.push({ productId: request.productId, quantity: request.quantity, price: product.price});
+            this.items.push({ productId: request.productId, quantity: request.quantity, price: product.price});
         }
     }
 
-    getCart(): Cart {
-        return this.cart;
+    getCart(): CartItem[] {
+        return this.items;
     }
 
-    async addCalculatedTotalPrice(): Promise<void> {
-        const cartCalculator = new CartCalculator();
-        this.cart.totalPrice = await cartCalculator.calculateTotalPrice(this.cart.items);
+    async getCalculatedTotalPrice(): Promise<number> {
+        return this.cartCalculator.calculateTotalPrice(this.items);
     }
 }

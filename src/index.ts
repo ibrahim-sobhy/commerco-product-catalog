@@ -7,6 +7,5 @@ const cart = new CartService(storage);
 cart.addToCart({ productId: "p1", quantity: 2 });
 
 ( async () => {
-    await cart.addCalculatedTotalPrice();
-    console.log(cart.getCart());
+    console.log(await cart.getCalculatedTotalPrice());
 })();

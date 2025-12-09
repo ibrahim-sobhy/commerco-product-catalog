@@ -1,7 +1,6 @@
 ## DESIGN PROBLEMS ##
 An item should not be able to be added to cart without a price because it can cause bugs and there is no benefit in it.
 cart.service.ts adds a product from the productRepo but does not add price of product.
-There is no interface for the actual cart. Where is the totalPrice supposed to be stored?
 Decouple cartCalculator from cart.service to enhance encapsulation.
 
 ## TESTABILITY CONCERNS ##

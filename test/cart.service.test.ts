@@ -7,13 +7,12 @@ describe("CartService", () => {
             findById: jest.fn()
         };
         repoMock.findById.mockReturnValue({ id: "p1", name: "Laptop", price: 1200, stock: 5});
-        const service = new CartService(repoMock);
+        const cart = new CartService(repoMock);
 
-        service.addToCart({ productId: "p1", quantity: 2 });
+        cart.addToCart({ productId: "p1", quantity: 2 });
 
-        const cart = service.getCart();
-        expect(cart.items.length).toBe(1);
-        expect(cart.items[0].quantity).toBe(2);
+        expect(cart.getCart().length).toBe(1);
+        expect(cart.getCart()[0].quantity).toBe(2);
     });
 
     it("should validate product stock is greater than 0", () => {
@@ -21,10 +20,10 @@ describe("CartService", () => {
             findById: jest.fn()
         };
         repoMock.findById.mockReturnValue({ id: "p1", name: "Laptop", price: 1200, stock: 5});
-        const service = new CartService(repoMock);
+        const cart = new CartService(repoMock);
 
         expect(() => {
-            service.addToCart({ productId: "outOfStockProduct", quantity: 10 });
+            cart.addToCart({ productId: "outOfStockProduct", quantity: 10 });
         }).toThrow("Insufficient stock")
     });
 
@@ -33,11 +32,10 @@ describe("CartService", () => {
             findById: jest.fn()
         };
         repoMock.findById.mockReturnValue({ id: "p1", name: "Laptop", price: 1200, stock: 5});
-        const cartService = new CartService(repoMock);
+        const cart = new CartService(repoMock);
 
-        cartService.addToCart({ productId: "p1", quantity: 2 });
-        await cartService.addCalculatedTotalPrice();
+        cart.addToCart({ productId: "p1", quantity: 2 });
 
-        expect(cartService.getCart().totalPrice).toBe(2160);
+        expect(await cart.getCalculatedTotalPrice()).toBe(2160);
     });
 });
