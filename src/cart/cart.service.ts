@@ -1,10 +1,11 @@
 import { AddToCartRequest } from "../interfaces/add-to-cart.request";
-import { ProductRepository } from "../products/product-local.repository";
+import { ProductRepository } from "../products/product.repository";
 import { CartItem } from "./cart-item";
 
 export class CartService {
-    private items : CartItem[] = [];
-    private productRepo = new ProductRepository();
+    private items: CartItem[] = [];
+    constructor(private productRepo: ProductRepository) { }
+
 
     addToCart(request: AddToCartRequest): void {
         const product = this.productRepo.findById(request.productId);
@@ -14,12 +15,12 @@ export class CartService {
         if (product.stock < request.quantity) {
             throw new Error("Insufficient stock");
         }
-        
+
         const existingItem = this.items.find(item => item.productId === request.productId);
         if (existingItem) {
             existingItem.quantity += request.quantity;
         } else {
-            this.items.push({ productId: request.productId, quantity: request.quantity });
+            this.items.push({ productId: request.productId, quantity: request.quantity, price: product.price });
         }
     }
 
